@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
-const tag = sequelize.define("tag", {
+const Tag = sequelize.define("Tag", {
     name:{
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -16,4 +16,4 @@ const tag = sequelize.define("tag", {
     timestamps: true,
 });
 
-export default tag;
+export default Tag;

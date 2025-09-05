@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 import user from "./user.models.js";
 
-const profile = sequelize.define("profile",{
+const Profile = sequelize.define("Profile",{
     user_id:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -38,4 +38,4 @@ const profile = sequelize.define("profile",{
     timestamps: true
 });
 
-export default profile;
+export default Profile;

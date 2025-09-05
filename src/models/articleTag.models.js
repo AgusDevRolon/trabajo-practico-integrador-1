@@ -3,7 +3,7 @@ import { sequelize } from "../config/database";
 import article from "./article.models.js";
 import tag from "./tag.models.js";
 
-const articleTag = sequelize.define("articleTag", {
+const ArticleTag = sequelize.define("ArticleTag", {
     article_id:{
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -27,4 +27,4 @@ const articleTag = sequelize.define("articleTag", {
     timestamps: true,
 });
 
-export default articleTag;
+export default ArticleTag;

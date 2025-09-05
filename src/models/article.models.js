@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 import user from "./user.models.js";
 
-const article = sequelize.define("article",{
+const Article = sequelize.define("Article",{
     title:{
         type: DataTypes.STRING(200),
         unique: true,
@@ -42,4 +42,4 @@ const article = sequelize.define("article",{
     timestamps: true,
 });
 
-export default article;
+export default Article;

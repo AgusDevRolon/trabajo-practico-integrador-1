@@ -1,7 +1,11 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
+import bcrypt from "bcrypt";
+import Profile from "./profile.models";
+import Article from "./article.models";
+import { FOREIGNKEYS } from "sequelize/lib/query-types";
 
-const user = sequelize.define("user",{
+const User = sequelize.define("User",{
     username:{
         type: DataTypes.STRING(20),
         allowNull: false,
@@ -16,23 +20,51 @@ const user = sequelize.define("user",{
         allowNull: false,
         validate:{
             isEmail:true, 
+            notEmpty: true,
         }
     },
     password:{
         type: DataTypes.STRING(225), 
-        allowNull: false
+        allowNull: false,
+        validate:{
+            len: [5, 100],
+        }
     },
     role:{
         type: DataTypes.ENUM("user", "admin"),
         allowNull: false,
         defaultValue: "user" 
     }
-    
-
 }, {
     tableName: "users", 
     timestamps: true, 
     paranoid: true, 
+    hooks:{
+        beforeCreate: async (user)=>{
+            if (user.password){
+                const salt = await bcrypt.genSalt(10); 
+                user.password = await bcrypt.hash(user.password, salt); 
+            }
+        },
+        beforeUpdate: async (user)=>{
+            if (user.changed("password")){
+                const salt = await bcrypt.genSalt(10);  
+                user.password = await bcrypt.hash(user.password, salt); 
+            }
+        }
+    }
 });
 
-export default user;
+
+User.associate = (models)=>{
+    models.User.hasOne(models.Profile, {foreignKey: "user_id", onDelete: "CASCADE"}); 
+    models.Profile.belongsTo(models.User, {foreignKey: "user_id"});
+
+    models.User.hasMany(models.Article, {foreignKey: "user_id", onDelete: "CASCADE"}); 
+    models.Article.belongsTo(models.User, {foreignKey: "user_id"});
+
+    models.Article.belongsToMany(models.Tag, {through: 'ArticleTag', foreignKey: "article_id"});
+    models.Tag.belongsToMany(models.Article, {through: 'ArticleTag', foreignKey: "tag_id"});
+}
+
+export default User;
