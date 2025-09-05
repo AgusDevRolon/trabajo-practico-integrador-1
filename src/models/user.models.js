@@ -1,44 +1,30 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/database";
-import bcrypt from "bcrypt";
-import Profile from "./profile.models";
-import Article from "./article.models";
-import { FOREIGNKEYS } from "sequelize/lib/query-types";
+import sequelize from "../config/database";
 
 const User = sequelize.define("User",{
     username:{
         type: DataTypes.STRING(20),
         allowNull: false,
         unique: true,
-        validate:{
-            len: [3, 20], 
-        }
     },
     email:{
         type: DataTypes.STRING(100),
         unique: true,
         allowNull: false,
-        validate:{
-            isEmail:true, 
-            notEmpty: true,
-        }
     },
     password:{
         type: DataTypes.STRING(225), 
         allowNull: false,
-        validate:{
-            len: [5, 100],
-        }
     },
     role:{
         type: DataTypes.ENUM("user", "admin"),
         allowNull: false,
-        defaultValue: "user" 
     }
 }, {
     tableName: "users", 
     timestamps: true, 
-    paranoid: true, 
+
+    
     hooks:{
         beforeCreate: async (user)=>{
             if (user.password){

@@ -3,16 +3,6 @@ import { sequelize } from "../config/database";
 import user from "./user.models.js";
 
 const Profile = sequelize.define("Profile",{
-    user_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: {
-            model: user,
-            key: "id"
-        },
-        onDelete: "CASCADE",
-    },
     first_name:{
         type: DataTypes.STRING(50),
         allowNull: false
