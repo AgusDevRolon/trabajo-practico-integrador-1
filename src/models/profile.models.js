@@ -38,4 +38,8 @@ const Profile = sequelize.define("Profile",{
     timestamps: true
 });
 
+Profile.associate = (models)=>{
+    models.Profile.belongsTo(models.User, {foreignKey: "user_id", as: "user"});
+};
+
 export default Profile;

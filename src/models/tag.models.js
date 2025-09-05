@@ -16,4 +16,8 @@ const Tag = sequelize.define("Tag", {
     timestamps: true,
 });
 
+Tag.associate = (models)=>{
+    models.Tag.belongToMany(models.Article, {through: models.ArticleTag, as: "articles", foreignKey: "tag_id"});
+};
+
 export default Tag;

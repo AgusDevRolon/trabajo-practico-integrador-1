@@ -57,14 +57,11 @@ const User = sequelize.define("User",{
 
 
 User.associate = (models)=>{
-    models.User.hasOne(models.Profile, {foreignKey: "user_id", onDelete: "CASCADE"}); 
-    models.Profile.belongsTo(models.User, {foreignKey: "user_id"});
+    models.User.hasOne(models.Profile, {foreignKey: "user_id", as: "profile", onDelete: "CASCADE"}); 
+    models.Profile.belongsTo(models.User, {foreignKey: "user_id", as: "user"});
 
-    models.User.hasMany(models.Article, {foreignKey: "user_id", onDelete: "CASCADE"}); 
-    models.Article.belongsTo(models.User, {foreignKey: "user_id"});
-
-    models.Article.belongsToMany(models.Tag, {through: 'ArticleTag', foreignKey: "article_id"});
-    models.Tag.belongsToMany(models.Article, {through: 'ArticleTag', foreignKey: "tag_id"});
-}
+    models.User.hasMany(models.Article, {foreignKey: "user_id", as: "articles", onDelete: "CASCADE"}); 
+    models.Article.belongsTo(models.User, {foreignKey: "user_id", as: "author"});
+};
 
 export default User;

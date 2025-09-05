@@ -23,8 +23,12 @@ const ArticleTag = sequelize.define("ArticleTag", {
         onDelete: "CASCADE",
     },
 }, {
-    tableName: "article_Tags", 
+    tableName: "articleTags", 
     timestamps: true,
 });
+
+Article.associate = (models)=>{
+    models.Article.belongsToMany(models.Tag, {through: models.ArticleTag, as: "tags", foreignKey: "article_id"});
+};
 
 export default ArticleTag;

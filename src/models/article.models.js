@@ -14,7 +14,7 @@ const Article = sequelize.define("Article",{
         type: DataTypes.TEXT,
         allowNull: false,
         validate:{
-            len: [50],
+            len: [50, 5000],
         }
     },
     excerpt:{
@@ -41,5 +41,16 @@ const Article = sequelize.define("Article",{
     tableName: "articles",
     timestamps: true,
 });
+
+Article.associate = (models)=>{
+    models.Article.belongsTo(models.User, {foreignKey: "user_id", as: "author"});
+
+    models.Article.belongsToMany(models.Tag, {
+        through: models.ArticleTag,
+        as: "tags",
+        foreignKey: "article_id",
+        onDelete: "CASCADE"
+    });
+}
 
 export default Article;
