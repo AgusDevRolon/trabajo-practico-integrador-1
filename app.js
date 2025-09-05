@@ -7,22 +7,19 @@ import { sequelize, testConnection } from './src/config/database.js';
 
 const app = express();
 
-//middlewares basicos
-app.use(express.json()); //permite recibir JSON en el body de las solicitudes
-app.use(cookieParser()); //permite manejar cookies
-//config de CORS
+app.use(express.json()); 
+app.use(cookieParser()); 
+
 app.use(cors({
-    origin:"*", //permite cualquier origen
-    credentials:true //permite enviar cookies
+    origin:"*", 
+    credentials:true 
 }));
 
 
-//ruta de prueba
 app.get('/', (req, res) => {
     res.send('servidor funcionando!...');
 });
 
-//levantar server
 const PORT = process.env.PORT || 3000;
 sequelize.sync({alter: true})
 .then(() => {
