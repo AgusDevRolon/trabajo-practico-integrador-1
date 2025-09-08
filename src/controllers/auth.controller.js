@@ -1,11 +1,11 @@
-import User from "../models/user.models.js";
-import Profile from "../models/profile.models.js";
+import User from "../models/user.model.js";
+import Profile from "../models/profile.model.js";
 import { Op } from "sequelize";
 import { hashPassword, comparePasswords } from "../helpers/bcrypt.js";
 import { signToken } from "../helpers/jwt.js";
 
 export const register = async (req, res) => {
-  const { username, email, password, first_name, last_name } = req.body;
+  const { username, email, password, first_name, last_name, role } = req.body;
 
   try {
     const existing = await User.findOne({
@@ -18,10 +18,10 @@ export const register = async (req, res) => {
 
     const hashed = await hashPassword(password);
 
-    const user = await User.create({ username, email, password: hashed });
+    const user = await User.create({ username, email, role, password: hashed });
 
     await Profile.create({
-      user_id: user.id,
+      user_id: user.id, // ⚡ clave: usar user_id según la relación
       first_name,
       last_name,
     });
@@ -39,7 +39,7 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({
       where: { email },
-      include: { model: Profile, as: "profile" },
+      include: { model: Profile, as: "profile" }, // ⚡ usar as: "profile"
     });
 
     if (!user) return res.status(404).json({ msg: "Credenciales incorrectas" });
@@ -67,7 +67,7 @@ export const profile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "username", "email", "role"],
-      include: { model: Profile, as: "profile" },
+      include: { model: Profile, as: "profile" }, // ⚡ usar as: "profile"
     });
 
     if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
@@ -83,7 +83,7 @@ export const updateProfile = async (req, res) => {
   const { first_name, last_name, biography, avatar_url, birth_date } = req.body;
 
   try {
-    const profile = await Profile.findOne({ where: { user_id: req.user.id } });
+    const profile = await Profile.findOne({ where: { user_id: req.user.id } }); // ⚡ usar user_id
 
     if (!profile) return res.status(404).json({ msg: "Perfil no encontrado" });
 
@@ -111,7 +111,7 @@ export const deleteUser = async (req, res) => {
     const user = await User.findByPk(req.user.id);
     if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
 
-    await Profile.destroy({ where: { user_id: req.user.id } });
+    await Profile.destroy({ where: { user_id: req.user.id } }); // ⚡ usar user_id
     await user.destroy();
 
     res.clearCookie("token");
